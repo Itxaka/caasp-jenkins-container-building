@@ -74,7 +74,7 @@ pipeline {
         stage('Check vulnerabilities') {
             steps {
                 script {
-                    sh("trivy image --format template --template 'junit.tpl' -o trivy-report.xml ${skubaImage.imageName()}")
+                    sh("trivy image --format template --template '@junit.tpl' -o trivy-report.xml ${skubaImage.imageName()}")
                 }
             }
         }
