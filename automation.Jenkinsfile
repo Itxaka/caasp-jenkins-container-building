@@ -68,7 +68,7 @@ pipeline {
         }
         stage('Gather licenses') {
             steps {
-                runCommandWithVirtualenv("tern report -f html -i ${skubaImage.imageName()} -o tern-report.html", "tern")
+                runCommandWithVirtualenv("tern report -f spdxtagvalue -i ${skubaImage.imageName()} -o tern-report.txt", "tern")
             }
         }
         stage('Check vulnerabilities') {
@@ -95,11 +95,10 @@ pipeline {
                 archiveArtifacts(artifacts: "unit-report.xml", allowEmptyArchive: true)
                 archiveArtifacts(artifacts: "trivy-report.xml", allowEmptyArchive: true)
                 archiveArtifacts(artifacts: "go-coverage.xml", allowEmptyArchive: true)
-                archiveArtifacts(artifacts: "tern-report.html", allowEmptyArchive: true)
+                archiveArtifacts(artifacts: "tern-report.txt", allowEmptyArchive: true)
                 junit 'unit-report.xml'
                 junit 'trivy-report.xml'
                 cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'go-coverage.xml', conditionalCoverageTargets: '70, 0, 0', enableNewApi: true, failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-                publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '.', reportFiles: 'tern-report.html', reportName: 'Tern report', reportTitles: ''])
             }
         }
     }
